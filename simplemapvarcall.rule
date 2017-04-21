@@ -1,0 +1,10 @@
+configfile: "config.yaml"
+
+include: config["modules"]["alignment"]
+include: config["modules"]["variantcall"]
+include: config["modules"]["reporter"]
+
+rule all:
+    input:
+        "report.html"
+

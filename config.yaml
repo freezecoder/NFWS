@@ -1,0 +1,19 @@
+
+pipeversion: "0.01"
+samples:
+    A: data/samples/A.fastq
+
+genomebuild: "hg19"
+samplename: "SampleXYZ"
+
+priormutrate: 0.04
+
+#Novoalign alignment params
+novoalign_params: "-r Random --hlimit 7 --softclip 20 --hlimit 8 -a -p 5,20"
+
+#Here is where we store our modules that do the work
+modules:
+ alignment:  "modules/alignment.rules"
+ variantcall: "modules/variantcalling.rules"
+ reporter: "modules/simplereport.rules"
+

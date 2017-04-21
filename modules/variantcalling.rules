@@ -1,0 +1,13 @@
+
+
+rule bcftools_call:
+    input:
+        fa="data/genome.fa",
+	bam=expand("sorted_reads/{sample}.bam", sample=config["samples"]),
+        bai=expand("sorted_reads/{sample}.bam.bai", sample=config["samples"])
+    output:
+        "calls/all.vcf"
+    params: pri=config["priormutrate"],foosz=33
+    shell:
+        "samtools mpileup -g -f {input.fa} {input.bam} | "
+        "bcftools call -P {params.pri}  -mv - > {output}"

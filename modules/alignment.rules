@@ -1,0 +1,32 @@
+
+rule novoalign_map:
+    input:
+        genome= "data/genome.fa",
+        #reads= lambda wildcards: config["samples"][wildcards.sample],
+	r1= "data/samples/{sample}.fastq",
+	r2= "data/samples/{sample}.fastq"
+    output:
+        "mapped_reads/{sample}.bam"
+    params:
+        rg="@RG\tID:{sample}\tSM:"+config["samplename"] ,
+        novoparams=config["novoalign_params"]
+    threads: 8
+    shell:
+        "novoalign -oSAM '{params.rg}' -c {threads} {params.novoparams} -d {input.genome} -f {input.r1} {input.r2} | samtools view -Sb - > {output}"
+
+rule samtools_sort:
+    input:
+        "mapped_reads/{sample}.bam"
+    output:
+        "sorted_reads/{sample}.bam"
+    shell:
+        "samtools sort -T sorted_reads/{wildcards.sample} "
+        "-O bam {input} > {output}"
+
+rule samtools_index:
+    input:
+        "sorted_reads/{sample}.bam"
+    output:
+        "sorted_reads/{sample}.bam.bai"
+    shell:
+        "samtools index {input}"
